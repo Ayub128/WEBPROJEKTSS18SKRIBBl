@@ -1,0 +1,168 @@
+<?<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+
+  <meta charset="utf-8">
+  <title>Skribbl Game</title>
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/Skribll.js"></script>
+  <script src="js/rad.js"></script>
+</head>
+<body>
+
+  <section>
+    <h1 id="titletop">Awesome Skribbl !!!!! </h1>
+  </section>
+  <div class="col-md-7">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid nav-bar">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+          <ul class="nav navbar-nav">
+            <li><a class="menu " href="/home" >Home</a></li>
+  					<li><a class="menu active" href="/skribll">Skribbl</a></li>
+  					<li><a class="menu" href="/highscores">highscores</a></li>
+  					<li><a class="menu" href="/wortview">Wort eingeben</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div id="nichts" style="margin-top:20px;padding-top:10px;"></div>
+  <div class="container">
+    <div class="row">
+
+      <div class="col-lg-6 col-sm-3  " >
+
+        <div id="toolb">
+          <div id="rad">
+            <div id="clear" class="radcontrol">Clear </div>
+            <div id="countSec" class="radcontrol">02:00 Minutes</div>
+          </div>
+        </div>
+        <canvas id="myCanvas" width="500%" height="420%" style="border:1px solid #000000; background-color: #fff;" >
+        </canvas>
+
+      </div>
+
+      <div class="col-lg-6 col-sm-3  " id="chat">
+        <header id="he1">Skribll Chat <a >von Ma_tu</a></header>
+        <ul id="content"></ul>
+        <footer id="fo1">
+          <form>
+          <input id="name" type="text" placeholder="Dein Name" required />
+          <input id="text" type="text" placeholder="Schreibe etwas..." required />
+          <input id="senden" type="submit" value="Senden" />
+          </form>
+        </footer>
+        <style type="text/css">
+        #chat{
+          margin: 0;
+          padding: 0;
+          font: 16px "Helvetica neue", Helvetica, Arial, sans-serif;
+          color: #333;
+        }
+        #he1{
+          display: block;
+          position: relative;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: auto;
+          padding: 0 0.5em;
+          background-color: #787878;
+          font-size: 24px;
+          line-height: 2em;
+          height: 2em;
+          color: black;
+        }
+        #fo1{
+          display: block;
+          position: relative;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: auto;
+          padding: 0 0.5em;
+          background-color: #787878;
+          font-size: 24px;
+          line-height: 2em;
+          height: 2em;
+          color: black;
+        }
+        #e1{
+          font-weight: bold;
+        }
+        #he1 > a:last-child{
+          float: right;
+          color: #fff;
+          font-weight: normal;
+        }
+        #fo1{
+          top: auto;
+          bottom: 0;
+        }
+        input{
+          height: 1.5em;
+          font-size: 24px;
+          color: black;
+
+        }
+        #senden{
+          background-color: grey;
+          color: white;
+          font-size: 30px;
+
+        }
+
+        #content{
+          margin: 5px;
+          list-style: none;
+          background-color:white;
+        }
+        #clear{
+          width: 60px;
+          display: inline-block;
+          margin-right: 5px;
+          margin-bottom: 20px;
+        }
+        #countSec{
+          width: 100px;
+          color: black;
+          background-color: yellow;
+          display: inline-block;
+          margin-left: 5px;
+        }
+        #clear:hover{
+          background-color: #f3f3f3;
+        }
+
+      </style>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="js/skribll.js">
+</script>
+<script type="text/javascript" src="js/rad.js">
+</script>
+</body>
+
+<footer>
+ <p> Ma_Tu 2018 WEB</p>
+</footer>
+
+
+</html>

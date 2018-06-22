@@ -1,0 +1,39 @@
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript">
+
+		function ConvertFormToJSON(form){
+			var array = jQuery(form).serializeArray();
+			var json = {};
+
+			jQuery.each(array, function() {
+				json[this.name] = this.value || '';
+			});
+
+			return json;
+		}
+
+		jQuery(document).on('ready', function() {
+			jQuery('form#formforword').bind('submit', function(event){
+				event.preventDefault();
+
+				var form = this;
+				var json = ConvertFormToJSON(form);
+
+				$.ajax({
+					type: "POST",
+					url: "submit.php",
+					data: json,
+					dataType: "json"
+				}).done(function() {
+						alert("YohOOO ");
+				}).fail(function() {
+					alert("Failed ");
+				});
+
+				var woerteList = document.getElementById("wlist");
+				woerteList.innerHTML = JSON.stringify( json ).replace(/","/g , "\r\n").replace("{ ", "").replace(" }","");
+				document.getElementById("formforword").reset();
+				return true;
+			});
+		});
+</script>
