@@ -93,6 +93,13 @@ io.on('connection', function (socket) {
 
   });
 
+    socket.on('typingmsg', function (data) {
+   		 io.sockets.emit('typingmsg', { name: data.name , text: "  tippt gerade" });
+   		 socket.on('notypingmsg', function (data) {
+   		 io.sockets.emit('clearttp', {});
+ 		 });
+  });
+
 
   for (var i in line_history) {
    socket.emit('draw_line', { line: line_history[i] } );

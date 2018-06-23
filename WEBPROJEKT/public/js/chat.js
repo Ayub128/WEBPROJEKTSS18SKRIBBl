@@ -1,8 +1,13 @@
+var name = "";
+var text = "";
 $(document).ready(function(){
+
     // WebSocket
     var socket = io.connect();
     // neue Nachricht
     socket.on('chat', function (data) {
+         name = $('#name').val();
+         text = $('#text').val();
         var zeit = new Date(data.zeit);
         $('#content').append(
             $('<li></li>').append(
@@ -21,12 +26,26 @@ $(document).ready(function(){
         // nach unten scrollen
         $('#chat').scrollTop($('body')[0].scrollHeight);
     });
+
+    socket.on('typingmsg', function (data) {
+         name = $('#name').val();
+         text = $('#text').val();
+         
+        $('#ttp').text(data.name + " " + data.text);
+        // nach unten scrollen
+        $('#chat').scrollTop($('body')[0].scrollHeight);
+    });
+
+    socket.on('clearttp', function (data) {
+        $('#ttp').text("");
+    });
+
+
     //we have a winner
     // Nachricht senden
     function senden(){
-        // Eingabefelder auslesen
-        var name = $('#name').val();
-        var text = $('#text').val();
+         name = $('#name').val();
+         text = $('#text').val();
         // Socket senden
         if(name==""){alert("Username muss eingegeben werden !")}
         else{
@@ -38,10 +57,19 @@ $(document).ready(function(){
     $('#senden').click(senden);
     // oder mit der Enter-Taste
     $('#text').keypress(function (e) {
+        name = $('#name').val();
+        socket.emit('typingmsg', {name: name});
         if (e.which == 13) {
             senden();
         }
     });
+
+    $('#text').blur(function (e) {
+            name = $('#name').val();
+            $('#ttp').text("");
+            socket.emit('notypingmsg', {name: name , text :" no typing "});
+    });
+
     var highscores = new Array();
 
     socket.on('winner', function (data) {
