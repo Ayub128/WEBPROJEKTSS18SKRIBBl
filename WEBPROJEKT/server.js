@@ -82,16 +82,17 @@ io.on('connection', function (socket) {
     if(wordsList[i].name==data.text){
       io.sockets.emit('winner', { name: data.name , text: 'hat richtig gertaen !' , word : wordsList[i].name });
       score=+5;
-		for (var j = highscoreslist.length - 1; j >= 0; j--) {
-    	  if(highscoreslist[j].name.toString()==data.name.toString()){highscoreslist[j].Score=+score;}else{highscoreslist.push({name : data.name , Score : score});}
+      for (var i = highscoreslist.length - 1; i >= 0; i--) {
+      if(highscoreslist[i].name==data.name){highscoreslist[i].Score=+score;}else{highscoreslist.push({name : data.name , Score : score});break;}
       }
       highscoreslist.sort(function (a, b) {
-      return a.value - b.value;
+      return b-a;
       });
-      fs.writeFile('highscores.json', JSON.stringify(highscoreslist), error => console.error);
+      fs.writeFile('highscores.json', JSON.stringify(highscoreTable), error => console.error);
     }};
 
   });
+
 
     socket.on('typingmsg', function (data) {
    		 io.sockets.emit('typingmsg', { name: data.name , text: "  tippt gerade" });
