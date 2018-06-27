@@ -49,11 +49,12 @@ $(document).ready(function(){
         // Socket senden
         if(name==""){alert("Username muss eingegeben werden !")}
         else{
+        //Name und Text mit socket senden
         socket.emit('chat', { name: name, text: text });
         // Text-Eingabe leeren
         $('#text').val('');}
     }
-    // bei einem Klick
+    // mit einem Klick
     $('#senden').click(senden);
     // oder mit der Enter-Taste
     $('#text').keypress(function (e) {

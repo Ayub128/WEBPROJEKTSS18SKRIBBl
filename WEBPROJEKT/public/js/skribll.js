@@ -1,4 +1,4 @@
-
+var socket = io.connect();
 document.addEventListener("DOMContentLoaded", function() {
    var mouse = {
       click: false,
@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
       context.moveTo(line[0].x * width, line[0].y * height);
       context.lineTo(line[1].x * width, line[1].y * height);
       context.stroke();
+      context.closePath();
    });
   
 var int;
@@ -89,5 +90,30 @@ function startTimer(duration, display) {
            clearTimeout(t);
            clearInterval(int);
       }, false);
+
+        socket.on('winner', function (data) {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+           clearTimeout(t);
+           clearInterval(int);
+    })
       
+    //Clear Canvas on Refresh
+    window.onbeforeunload = function (e) {
+    var e = e || window.event;
+
+    // For IE and Firefox
+    if (e) {
+        e.returnValue = 'Leaving the page';
+      var canvas  = document.getElementById('myCanvas');
+     var context = canvas.getContext('2d');
+     var width   = 500;
+     var height  = 500;
+     var socket  = io.connect();
+     context.clearRect(0, 0, canvas.width, canvas.height);
+     context.beginPath();
+    }
+
+    // For Safari
+    return 'Leaving the page';
+};
 });

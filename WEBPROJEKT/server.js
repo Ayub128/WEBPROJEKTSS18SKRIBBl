@@ -9,13 +9,18 @@ var urlencodedParser = bodyParser.urlencoded({extended : false});
 var fs = require('fs');
 conf = require('./config.json');
 server.listen(conf.port);
-const highscoreslist = require('./highscores');
+
+var highscoreslist = require('./highscores.json');
 var currentID=1;
 var filedata= new Array();
 
 app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, '/public')));
+
+app.get('/' ,function(req,res){
+  res.render('home',{qs : req.query});
+})
 
 app.get('/wortview' ,function(req,res){
   res.render('wortview',{qs : req.query});
@@ -64,7 +69,7 @@ app.post('/wortview',urlencodedParser,function(req,res){
 var line_history = [];
 let wordsList = [];
 let highscoreTable=[{name : "default" , Score : 0}];
-let score=0;
+let score=5;
 
 io.on('connection', function (socket) {
 
@@ -74,21 +79,32 @@ io.on('connection', function (socket) {
         })
 
   socket.emit('chat', { zeit: new Date(), text: 'Du bist jetzt mit dem Server verbunden!' });
-
+  var gef=false;
   socket.on('chat', function (data) {
   io.sockets.emit('chat', { zeit: new Date(), name: data.name || 'Anonym', text: data.text });
 
     for (var i = wordsList.length - 1; i >= 0; i--) {
     if(wordsList[i].name==data.text){
       io.sockets.emit('winner', { name: data.name , text: 'hat richtig gertaen !' , word : wordsList[i].name });
-      score=+5;
-      for (var i = highscoreslist.length - 1; i >= 0; i--) {
-      if(highscoreslist[i].name==data.name){highscoreslist[i].Score=+score;}else{highscoreslist.push({name : data.name , Score : score});break;}
+      
+      for (var j = highscoreslist.length - 1; j >= 0; j--) {
+      if(highscoreslist[j].name==data.name){gef=true;break;}
+      else {gef = false;}
       }
-      highscoreslist.sort(function (a, b) {
-      return b-a;
-      });
-      fs.writeFile('highscores.json', JSON.stringify(highscoreTable), error => console.error);
+      if(gef==true){console.log("gefunden");highscoreslist[j].Score+=5;}
+      if(gef==false){console.log("nicht gefunden");highscoreslist.push({name : data.name , Score : score});}
+
+      
+
+      	ListSort = function (a,b) {
+    	return b.Score - a.Score ;
+		};
+
+		highscoreslist.sort(ListSort);
+
+      console.log(highscoreslist);
+      fs.writeFile('highscores.json', JSON.stringify(highscoreslist), error => console.error);
+
     }};
 
   });
