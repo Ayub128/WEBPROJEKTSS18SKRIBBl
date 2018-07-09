@@ -28,7 +28,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         var Minutes = 60 * 2,
                         display = document.querySelector('#countSec');
                         startTimer(Minutes, display);
-                        t = setTimeout(function(){ alert("Zeit ist um :/ Jetzt beginnt eine neue Runde");context.clearRect(0, 0, canvas.width, canvas.height); }, 120000); 
+                        t = setTimeout(function(){ alert("Zeit ist um :/ Jetzt beginnt eine neue Runde");
+                                                    context.clearRect(0, 0, canvas.width, canvas.height);
+                                                    socket.emit('fertig', { text : " jetzt beginnt ene neue Runde " });
+                         }, 120000); 
 
 };
 
@@ -51,6 +54,11 @@ document.addEventListener("DOMContentLoaded", function() {
       context.stroke();
       context.closePath();
    });
+
+    socket.on('wait', function (data) {
+      alert(data.text + "Anzahl der Spieler in der Warteschlange : " + data.num);
+   });
+
   
 var int;
 
@@ -69,10 +77,12 @@ function startTimer(duration, display) {
             timer = duration;
             clearTimeout(t);
             clearInterval(int);
+            socket.emit('fertig', { text : " jetzt beginnt ene neue Runde " });
         }
     }, 1000);
 }
    
+
    function mainLoop() {
       // check if the user is drawing
       if (mouse.click && mouse.move && mouse.pos_prev) {
@@ -83,7 +93,16 @@ function startTimer(duration, display) {
       mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
       setTimeout(mainLoop, 25);
    }
-   mainLoop();
+   
+     socket.on('currentlydrawing', function (data) {
+      var currently = data.bool;
+      if(currently==false){mainLoop();}
+      socket.emit('currentlydrawing', { bool : currently });
+   });
+      socket.on('now', function (data) {
+      alert(data.text);
+      mainLoop();
+   });
 
       document.getElementById('clear').addEventListener('click', function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
