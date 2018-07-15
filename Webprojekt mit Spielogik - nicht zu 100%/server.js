@@ -79,7 +79,6 @@ let isDrawing = false;
 let waitList = [];
 let plr="";
 
-<<<<<<< HEAD
 //Socket events
 io.on('connect', function (socket) {
 
@@ -117,9 +116,6 @@ io.on('connect', function (socket) {
         plr = data.name;
         });
 };
-=======
-io.on('connection', function (socket) {
->>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
 
 
   socket.emit('chat', { zeit: new Date(), text: 'Du bist jetzt mit dem Server verbunden!' });
@@ -129,7 +125,6 @@ io.on('connection', function (socket) {
   socket.on('chat', function (data) {
   io.sockets.emit('chat', { zeit: new Date(), name: data.name || 'Anonym', text: data.text });
 
-<<<<<<< HEAD
 
 
     fs.readFile('words.json', (err, data) => {  
@@ -137,49 +132,6 @@ io.on('connection', function (socket) {
         wordsList = JSON.parse(data);
         })
 
-=======
-    if(data.text=="malen"){
-
-      socket.emit('currentlydrawing', { bool: isDrawing } );
-      socket.on('chat', function (data) {isDrawing=data.bool;});
-      
-        if(isDrawing == false){
-            
-              for (var i in line_history) {
-               socket.emit('draw_line', { line: line_history[i] } );
-              }
-              socket.on('draw_line', function (data) {
-              line_history.push(data.line);
-              io.emit('draw_line', { line: data.line });
-              });
-
-            currentPlayers.push(data.name);
-            plr = data.name;
-            isDrawing=true;
-          }
-        else{
-            var msg = "Bitte warten, "+ plr +" ist schon am Malen ";
-            socket.emit('wait', {  text: msg , num :  waitList.length });
-            waitList.push(data.name);
-        }
-
-        socket.on('fertig', function (data) {
-        isDrawing=false;
-        currentPlayers.push(waitList.pop(data.name));
-        socket.emit('now', { text: "Jetzt sind Sie daran, Sie haben 2 Minuten Zeit zum Malen"});
-         
-          for (var i in line_history) {
-           socket.emit('draw_line', { line: line_history[i] } );
-          }
-          socket.on('draw_line', function (data) {
-          line_history.push(data.line);
-          io.emit('draw_line', { line: data.line });
-          });
-
-        plr = data.name;
-        });
-    }
->>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
 
     for (var i = wordsList.length - 1; i >= 0; i--) {
     if(wordsList[i].name==data.text){
@@ -190,7 +142,6 @@ io.on('connection', function (socket) {
 
       if(highscoreslist[j].name==data.name){gef=true;break;}
       else {gef = false;}
-<<<<<<< HEAD
 
       if(highscoreslist[j].name==plr){gef2=true;break;}
       else {gef2 = false;}
@@ -200,15 +151,6 @@ io.on('connection', function (socket) {
       if(gef2==true){console.log("Maler gefunden");highscoreslist[j].Score+=5;}
       if(gef2==false){console.log("Maler nicht gefunden");highscoreslist.push({name : plr , Score : score});}
     }
-=======
-      }
-      if(highscoreslist[j].name==plr){gef2=true;break;}
-      else {gef2 = false;}
-      }
-
-  
-
->>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
 
       }
     }
@@ -222,12 +164,7 @@ io.on('connection', function (socket) {
       
       fs.writeFile('highscores.json', JSON.stringify(highscoreslist), error => console.error);
 
-<<<<<<< HEAD
     
-=======
-    }
-
->>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
   });
 
 
@@ -239,7 +176,6 @@ io.on('connection', function (socket) {
      });
   });
 
-<<<<<<< HEAD
     //emit canvas Inhalt
 
       for (var i in line_history) {
@@ -250,8 +186,6 @@ io.on('connection', function (socket) {
       io.emit('draw_line', { line: data.line });
       });
 
-=======
->>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
   
 
 
