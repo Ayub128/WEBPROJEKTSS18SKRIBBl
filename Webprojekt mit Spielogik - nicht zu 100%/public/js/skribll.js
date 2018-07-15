@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
    };
 
 
-
+// Inhalt von Canvas abrufen
   socket.on('draw_line', function (data) {
       var line = data.line;
 
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   
 var int;
-
+//timer for drawing
 function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
    int = setInterval(function () {
@@ -80,7 +80,6 @@ function startTimer(duration, display) {
     }, 1000);
 }
    
-
    function mainLoop() {
       // check if the user is drawing
       if (mouse.click && mouse.move && mouse.pos_prev) {
@@ -92,7 +91,7 @@ function startTimer(duration, display) {
       setTimeout(mainLoop, 25);
    }
    
-
+//socket events jetzt and warten
       socket.on('jetzt', function (data) {
       alert(data.text);
       mainLoop();
@@ -102,12 +101,15 @@ function startTimer(duration, display) {
       alert(data.text + "Anzahl der Spieler in der Warteschlange : " + data.num);
      });
     
+   
+   // clearing canvas
       document.getElementById('clear').addEventListener('click', function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
            clearTimeout(t);
            clearInterval(int);
       }, false);
-
+   
+//we have a winner
         socket.on('winner', function (data) {
           context.clearRect(0, 0, canvas.width, canvas.height);
            clearTimeout(t);
