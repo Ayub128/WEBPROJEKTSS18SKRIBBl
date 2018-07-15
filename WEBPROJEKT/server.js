@@ -18,6 +18,8 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
+//get and post requests
+
 app.get('/' ,function(req,res){
   res.render('home',{qs : req.query});
 })
@@ -66,64 +68,127 @@ app.post('/wortview',urlencodedParser,function(req,res){
 });
 })
 
+
 var line_history = [];
 let wordsList = [];
 let highscoreTable=[{name : "default" , Score : 0}];
 let score=5;
 
-io.on('connection', function (socket) {
+let currentPlayers= [];
+let isDrawing = false;
+let waitList = [];
+let plr="";
+
+//Socket events
+io.on('connect', function (socket) {
+
+    currentPlayers[currentPlayers.length]=socket;
+
+     function userdraw (data) {
+
+    	console.log("user with socket id requested drawing  " + socket.id);
+    	
+      
+        if(isDrawing == false){
+            
+            socket.emit('jetzt', { text: "Jetzt sind Sie daran, Sie haben 2 Minuten Zeit zum Malen"});
+         	console.log("emitted to this id  " + socket.id);
+            plr = data.name;
+            isDrawing=true;
+
+          }
+        else{
+
+        	plr = data.name;
+            waitList.push(data.name);
+            var msg = "Bitte warten, "+ plr +" ist schon am Malen ";
+            socket.emit('warten', {  text: msg , num :  waitList.length });
+            console.log("emitted to this id wait event  " + socket.id);
+            
+        }
+
+        socket.on('fertig', function (data) {
+        isDrawing=false;
+        currentPlayers.push(waitList.pop(data.name));
+        socket.emit('jetzt', { text: "Jetzt sind Sie daran, Sie haben 2 Minuten Zeit zum Malen"});
+        console.log("emitted to this id fertig event " + socket.id);
+         
+        plr = data.name;
+        });
+};
+
+
+  socket.emit('chat', { zeit: new Date(), text: 'Du bist jetzt mit dem Server verbunden!' });
+  socket.on('userwanttodraw', userdraw);
+  var gef=false;
+  var gef2=false;
+  socket.on('chat', function (data) {
+  io.sockets.emit('chat', { zeit: new Date(), name: data.name || 'Anonym', text: data.text });
+
+
 
     fs.readFile('words.json', (err, data) => {  
         if (err) throw err;
         wordsList = JSON.parse(data);
         })
 
-  socket.emit('chat', { zeit: new Date(), text: 'Du bist jetzt mit dem Server verbunden!' });
-  var gef=false;
-  socket.on('chat', function (data) {
-  io.sockets.emit('chat', { zeit: new Date(), name: data.name || 'Anonym', text: data.text });
 
     for (var i = wordsList.length - 1; i >= 0; i--) {
     if(wordsList[i].name==data.text){
-      io.sockets.emit('winner', { name: data.name , text: 'hat richtig gertaen !' , word : wordsList[i].name });
+      io.sockets.emit('winner', { name: data.name , text: 'hat richtig geraten !' , word : wordsList[i].name });
       
+      //suche bzw. einfuegen der Gewinner
       for (var j = highscoreslist.length - 1; j >= 0; j--) {
+
       if(highscoreslist[j].name==data.name){gef=true;break;}
       else {gef = false;}
+
+      if(highscoreslist[j].name==plr){gef2=true;break;}
+      else {gef2 = false;}
+
+      if(gef==true){console.log("Player gefunden");highscoreslist[j].Score+=5;}
+      if(gef==false){console.log("Player nicht gefunden");highscoreslist.push({name : data.name , Score : score});}
+      if(gef2==true){console.log("Maler gefunden");highscoreslist[j].Score+=5;}
+      if(gef2==false){console.log("Maler nicht gefunden");highscoreslist.push({name : plr , Score : score});}
+    }
+
       }
-      if(gef==true){console.log("gefunden");highscoreslist[j].Score+=5;}
-      if(gef==false){console.log("nicht gefunden");highscoreslist.push({name : data.name , Score : score});}
+    }
+    //sortiere von highscores liste ( absteigend)
+      ListSort = function (a,b) {
+      return b.Score - a.Score ;
+    };
+
+    highscoreslist.sort(ListSort);
 
       
-
-      	ListSort = function (a,b) {
-    	return b.Score - a.Score ;
-		};
-
-		highscoreslist.sort(ListSort);
-
-      console.log(highscoreslist);
       fs.writeFile('highscores.json', JSON.stringify(highscoreslist), error => console.error);
 
-    }};
-
+    
   });
 
 
+  	//wenn jemand tippt
     socket.on('typingmsg', function (data) {
-   		 io.sockets.emit('typingmsg', { name: data.name , text: "  tippt gerade" });
-   		 socket.on('notypingmsg', function (data) {
-   		 io.sockets.emit('clearttp', {});
- 		 });
+       socket.broadcast.emit('typingmsg', { name: data.name , text: "  tippt gerade" });
+       socket.on('notypingmsg', function (data) {
+       socket.emit('clearttp', {});
+     });
   });
 
+    //emit canvas Inhalt
 
-  for (var i in line_history) {
-   socket.emit('draw_line', { line: line_history[i] } );
-  }
-  socket.on('draw_line', function (data) {
-  line_history.push(data.line);
-  io.emit('draw_line', { line: data.line });
-  });
+      for (var i in line_history) {
+      socket.emit('draw_line', { line: line_history[i] } );
+      }
+      socket.on('draw_line', function (data) {
+      line_history.push(data.line);
+      io.emit('draw_line', { line: data.line });
+      });
+
+  
+
+
 
 });
+

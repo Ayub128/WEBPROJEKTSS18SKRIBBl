@@ -27,6 +27,7 @@ $(document).ready(function(){
         $('#chat').scrollTop($('body')[0].scrollHeight);
     });
 
+    //wenn jemand tippt
     socket.on('typingmsg', function (data) {
          name = $('#name').val();
          text = $('#text').val();
@@ -36,12 +37,11 @@ $(document).ready(function(){
         $('#chat').scrollTop($('body')[0].scrollHeight);
     });
 
+    //Clear text when someone stopped typing
     socket.on('clearttp', function (data) {
         $('#ttp').text("");
     });
 
-
-    //we have a winner
     // Nachricht senden
     function senden(){
          name = $('#name').val();
@@ -51,6 +51,10 @@ $(document).ready(function(){
         else{
         //Name und Text mit socket senden
         socket.emit('chat', { name: name, text: text });
+
+        //spieler will malen
+        if(text=="malen"){socket.emit('userwanttodraw', {});}
+
         // Text-Eingabe leeren
         $('#text').val('');}
     }
@@ -71,8 +75,8 @@ $(document).ready(function(){
             socket.emit('notypingmsg', {name: name , text :" no typing "});
     });
 
-    var highscores = new Array();
-
+    
+    //wenn jemand richtig geraten hat
     socket.on('winner', function (data) {
         var thewinner = data.name;
         var winnerscore=0;
@@ -84,3 +88,7 @@ $(document).ready(function(){
     })
 
 });
+
+
+
+
