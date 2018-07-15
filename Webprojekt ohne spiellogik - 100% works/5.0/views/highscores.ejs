@@ -1,0 +1,76 @@
+<?<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+
+	<meta charset="utf-8">
+	<title>Skribbl Game</title>
+	<link type="text/css"  rel="stylesheet" href="/css/font-awesome.min.css">
+	<link type="text/css"  rel="stylesheet" href="/css/bootstrap.min.css">
+	<link type="text/css"  rel="stylesheet" href="/css/style.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/Skribll.js"></script>
+    <script src="js/rad.js"></script>
+</head>
+<section>
+	<h1 id="titletop">Awesome Skribbl !!!!! </h1>
+</section>
+<div class="col-md-7">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid nav-bar">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+				<ul class="nav navbar-nav">
+					<li><a class="menu " href="/home" >Home</a></li>
+					<li><a class="menu" href="/skribll">Skribbl</a></li>
+					<li><a class="menu active" href="/highscores">highscores</a></li>
+					<li><a class="menu" href="/wortview">Wort eingeben</a></li>
+				</ul>
+			</div><!-- /navbar-collapse -->
+		</div><!-- / .container-fluid -->
+	</nav>
+</div>
+
+
+
+<body>
+                        
+                <table  width="500px" id="highscores_table" style="margin-left: 100px;margin-top: 200px;">
+                      <tr>
+                        <th>Name</th>
+                        <th>Highscore</th>
+                      </tr>
+
+                  <% for (var i = 0; i < qs.length; i++) { %>
+                    <tr>
+                      <td><%= qs[i].name %></td>
+                      <td><%= qs[i].Score %></td>
+                    </tr>    
+                  <% } %>
+                </table>
+</body>
+
+<script>
+
+</script>
+    <footer>
+       <p> Ma_Tu 2018 WEB</p>
+   </footer>
+   </html>
