@@ -30,7 +30,11 @@ document.addEventListener("DOMContentLoaded", function() {
                         startTimer(Minutes, display);
                         t = setTimeout(function(){ alert("Zeit ist um :/ Jetzt beginnt eine neue Runde");
                                                     context.clearRect(0, 0, canvas.width, canvas.height);
+<<<<<<< HEAD
                                                     io.emit('fertig', { text : " jetzt beginnt ene neue Runde " });
+=======
+                                                    socket.emit('fertig', { text : " jetzt beginnt ene neue Runde " });
+>>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
                          }, 120000); 
 
 };
@@ -56,6 +60,12 @@ document.addEventListener("DOMContentLoaded", function() {
       context.closePath();
    });
 
+<<<<<<< HEAD
+=======
+    socket.on('wait', function (data) {
+      alert(data.text + "Anzahl der Spieler in der Warteschlange : " + data.num);
+   });
+>>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
 
   
 var int;
@@ -92,11 +102,23 @@ function startTimer(duration, display) {
       setTimeout(mainLoop, 25);
    }
    
+<<<<<<< HEAD
 
       socket.on('jetzt', function (data) {
       alert(data.text);
       mainLoop();
       });
+=======
+     socket.on('currentlydrawing', function (data) {
+      var currently = data.bool;
+      if(currently==false){mainLoop();}
+      socket.emit('currentlydrawing', { bool : currently });
+   });
+      socket.on('now', function (data) {
+      alert(data.text);
+      mainLoop();
+   });
+>>>>>>> c4a5647fdaaf28917b62c6eb7a770e9b915d777c
 
     socket.on('warten', function (data) {
       alert(data.text + "Anzahl der Spieler in der Warteschlange : " + data.num);
